@@ -7,12 +7,18 @@ class bot():
 # strategy 1 = defect
 
     def __init__(self, n, s):
-        self.strategy_names = ["always_cooperate", "always_default", "tit_for_tat", "random", "forgiver", "occasional_cheater"]
+        self.strategy_names = [ "always_cooperate"      , # 0
+                                "always_default"        , # 1
+                                "tit_for_tat"           , # 2
+                                "random"                , # 3
+                                "forgiver"              , # 4
+                                "occasional_cheater"    , # 5
+                                "analyser"]               # 6
         self.number   = n
         self.strategy = s       
         self.score = 0
         self.memory = []
-        for i in range(10):
+        for i in range(20):
             b = []
             c = copy.deepcopy(b)
             self.memory.append(c)
@@ -53,9 +59,29 @@ class bot():
                 return 0
         else:            
             return 1
+    def analyser(self, bot_number):
+        if self.record(bot_number) > 80.0:
+            return 0
+        else:
+            return 1
             
     def random(self,n):
         return random.randrange(0,2,1)
+    
+    def record(self, b):
+        count = 0
+        coop  = 0
+        perc = 0.0
+        for x in self.memory[b]:
+            count += 1
+            if x == 0:
+                coop += 1
+        
+        if count > 5:
+            return 100 * float(coop) / float(count)
+        else:
+            return 100            
+                
 
 class tournament():  
     def __init__(self):
@@ -66,7 +92,7 @@ class tournament():
         self.botlist.append(x)
         x = bot(2,2)
         self.botlist.append(x)
-        x = bot(3,3)
+        x = bot(3,6)
         self.botlist.append(x)
         x = bot(4,4)
         self.botlist.append(x)
@@ -75,6 +101,20 @@ class tournament():
         x = bot(6,5)
         self.botlist.append(x)
         x = bot(7,5)
+        self.botlist.append(x)
+        x = bot(8,5)
+        self.botlist.append(x)
+        x = bot(9,5)
+        self.botlist.append(x)
+        x = bot(10,1)
+        self.botlist.append(x)
+        x = bot(11,5)
+        self.botlist.append(x)
+        x = bot(12,6)
+        self.botlist.append(x)
+        x = bot(13,6)
+        self.botlist.append(x)
+        x = bot(14,6)
         self.botlist.append(x)
     
     def conduct(self, n):    
@@ -107,10 +147,10 @@ class tournament():
 
     def output(self):
         for aa in sorted(self.botlist, key=lambda bot: bot.score, reverse=True):
-            print "bot: {0} stategy: {1:20} score: {2}".format(aa.number, aa.strategy_names[aa.strategy], aa.score)
+            print "bot: {0:2} stategy: {1:20} score: {2}".format(aa.number, aa.strategy_names[aa.strategy], aa.score)
 
 mytorny = tournament()
 
-mytorny.conduct(1000)
+mytorny.conduct(200)
 
 mytorny.output()
