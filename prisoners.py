@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+# David Zuccaro
+# 25/10/2016
+
 import copy
 import random
 
@@ -14,6 +18,7 @@ class bot():
                                 "forgiver"              , # 4
                                 "occasional_cheater"    , # 5
                                 "analyser"]               # 6
+                                
         self.number   = n
         self.strategy = s       
         self.score = 0
@@ -60,7 +65,7 @@ class bot():
         else:            
             return 1
     def analyser(self, bot_number):
-        if self.record(bot_number) > 80.0:
+        if self.record(bot_number) > 90.0:
             return 0
         else:
             return 1
@@ -86,36 +91,20 @@ class bot():
 class tournament():  
     def __init__(self):
         self.botlist = []
-        x = bot(0,2)    
+        x = bot(0,0)    
         self.botlist.append(x)
         x = bot(1,1)
         self.botlist.append(x)
         x = bot(2,2)
         self.botlist.append(x)
-        x = bot(3,6)
+        x = bot(3,3)
         self.botlist.append(x)
         x = bot(4,4)
         self.botlist.append(x)
-        x = bot(5,4)
+        x = bot(5,5)
         self.botlist.append(x)
-        x = bot(6,5)
-        self.botlist.append(x)
-        x = bot(7,5)
-        self.botlist.append(x)
-        x = bot(8,5)
-        self.botlist.append(x)
-        x = bot(9,5)
-        self.botlist.append(x)
-        x = bot(10,1)
-        self.botlist.append(x)
-        x = bot(11,5)
-        self.botlist.append(x)
-        x = bot(12,6)
-        self.botlist.append(x)
-        x = bot(13,6)
-        self.botlist.append(x)
-        x = bot(14,6)
-        self.botlist.append(x)
+        x = bot(6,6)
+        self.botlist.append(x)      
     
     def conduct(self, n):    
         for i in range(n):
@@ -148,6 +137,7 @@ class tournament():
     def output(self):
         for aa in sorted(self.botlist, key=lambda bot: bot.score, reverse=True):
             print "bot: {0:2} stategy: {1:20} score: {2}".format(aa.number, aa.strategy_names[aa.strategy], aa.score)
+
 
 mytorny = tournament()
 
