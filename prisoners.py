@@ -66,12 +66,12 @@ class bot():
         if len(self.memory[bot_bot_id]) == 0:
             return 0
         elif self.memory[bot_bot_id][-1] == 0:
-            if random.randrange(0,100,1) == 99:
+            if random.randrange(0,self.accuracy,1) == self.accuracy - 1:
                 return 1 # a mistake
             else:
                 return 0
         else:
-            if random.randrange(0,100,1) == 99:
+            if random.randrange(0,self.accuracy,1) == self.accuracy - 1:
                 return 0 # a mistake
             else:
                 return 1
@@ -81,12 +81,12 @@ class bot():
             return 0
         elif self.memory[bot_bot_id][-1] == 1 and self.memory[bot_bot_id][-2] == 1:
             # has defected the last two times
-            if random.randrange(0,10,1) == 9:
+            if random.randrange(0,self.accuracy,1) == self.accuracy - 1:
                 return 0 # a mistake
             else:
                 return 1
         else:
-            if random.randrange(0,10,1) == 9:
+            if random.randrange(0,self.accuracy,1) == self.accuracy - 1:
                 return 1 # a mistake
             else:
                 return 0
@@ -125,7 +125,7 @@ class bot():
                 return 1
     
     def bad_guy(self, bot_bot_id):        
-        if random.randrange(0,self.goodness,1) == self.goodness - 1:
+        if random.randrange(0, self.goodness,1) == self.goodness - 1:
             return 1
         else:        
             rec_perc = self.record(bot_bot_id) 
@@ -164,10 +164,14 @@ class ecosystem():
     def __init__(self):
         self.bot_id = 0
         self.botlist = []        
-        for i in range(5):
+        for i in range(4):
             self.add_bot(7) 
-        for i in range(5):
+        for i in range(4):
             self.add_bot(8)               
+        for i in range(4):
+            self.add_bot(4)            
+        for i in range(4):
+            self.add_bot(2)            
         self.year = 0
     
     def add_bot(self,t):
@@ -183,12 +187,12 @@ class ecosystem():
             b2.remember(self.botlist.index(b1), 0)
             
         if b1.get_strat(self.botlist.index(b2)) == 1 and b2.get_strat(self.botlist.index(b1)) == 0:
-            b1.score += 3
+            b1.score += 4
             b1.remember(self.botlist.index(b2),  0)
             b2.remember(self.botlist.index(b1), 1)
         
         if b1.get_strat(self.botlist.index(b2)) == 1 and b2.get_strat(self.botlist.index(b1)) == 0:
-            b2.score += 3       
+            b2.score += 4       
             b1.remember(self.botlist.index(b2), 1)
             b2.remember(self.botlist.index(b1), 0)
             
@@ -240,7 +244,8 @@ class ecosystem():
         
         born_bot.strictness += random.randrange(-5,6,1)               
         born_bot.accuracy += random.randrange(-1,2,1) 
-        born_bot.goodness += random.randrange(-1,2,1) 
+        if born_bot.goodness > 2:
+            born_bot.goodness += random.randrange(-1,2,1) 
         self.botlist.append(born_bot)
     
         self.botlist.remove(looser_bot)
@@ -248,24 +253,24 @@ class ecosystem():
     def output(self):
         
         tot_mem      = 0
-        tot_leniency = 0
+        tot_strictness = 0
         av_mem       = 0
-        av_leniency  = 0
+        av_strictness  = 0
         
         for i in self.botlist:
             tot_mem      += i.memory_length
-            tot_leniency += i.strictness
+            tot_strictness += i.strictness
         
-        av_mem      = float(tot_mem)      / float(len(self.botlist))
-        av_leniency = float(tot_leniency) / float(len(self.botlist))
+        av_mem        = float(tot_mem)        / float(len(self.botlist))
+        av_strictness = float(tot_strictness) / float(len(self.botlist))
         print " ***** Year {0} ***** ".format(self.year)
-        print "avcut {0} avmem {1}".format(av_leniency, av_mem)
+        print "avcut {0} avmem {1}".format(av_strictness, av_mem)
         
         
         for aa in sorted(self.botlist, key=lambda bot: bot.score, reverse=True):
             
-            print "bot: {0:4} memory {3:4} cuttoff {4:4} bad {6:5} error {5:5} stategy: {1:20} score: {2}".format(aa.bot_id, aa.strategy_names[aa.strategy], aa.score, aa.memory_length, aa.strictness, aa.accuracy, aa.goodness)
+            print "bot: {0:4} memory {3:4} strictness {4:4} goodness {6:5} accuracy {5:5} strategy: {1:20} score: {2}".format(aa.bot_id, aa.strategy_names[aa.strategy], aa.score, aa.memory_length, aa.strictness, aa.accuracy, aa.goodness)
 
 myeco = ecosystem()
 
-myeco.evolve(100)
+myeco.evolve(200)
